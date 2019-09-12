@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
@@ -12,7 +13,16 @@ class NoteController extends Controller
   public function list()
   {
     $user = Auth::user();
-    return $user->notes()->trainings;
+    $notes = [];
+    foreach ($user->notes() as $note) {
+      $notes[] = [
+        'id' => $note->id,
+        'title' => $note->title,
+        'created' => $note->created,
+        'updated' => $note->updated,
+      ];
+    }
+    return $notes;
   }
 
   public function create(Request $request)
@@ -20,7 +30,7 @@ class NoteController extends Controller
     $user = Auth::user();
     $request->validate([
       'title' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'max:1000'],
+      'note' => ['required', 'string', 'max:1000'],
     ]);
 
     $note = new Note([
@@ -28,7 +38,17 @@ class NoteController extends Controller
       'note' => $request->get('note'),
     ]);
     $user->notes()->save($note);
+    return $note;
+  }
+
+  public function delete($id) {
+    $user = Auth::user();
+    $note = $this->findNote($id, $user);
+    return Note::destroy($id);
 
   }
 
+  private function findNote($id, $user) {
+    return Note::where('id', $id)->where('user_id', $user->id);
+  }
 }
