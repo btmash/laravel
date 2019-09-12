@@ -14,12 +14,12 @@ class NoteController extends Controller
   {
     $user = Auth::user();
     $notes = [];
-    foreach ($user->notes() as $note) {
+    foreach ($user->notes as $note) {
       $notes[] = [
         'id' => $note->id,
         'title' => $note->title,
-        'created' => $note->created,
-        'updated' => $note->updated,
+        'created' => $note->created_at,
+        'updated' => $note->updated_at,
       ];
     }
     return $notes;
