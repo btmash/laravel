@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
 {
-  //
+
+  /**
+   * Index function to show list of notes.
+   * @return array
+   *   JSON response of note items.
+   */
   public function list()
   {
     $user = Auth::user();
@@ -25,7 +29,16 @@ class NoteController extends Controller
     return $notes;
   }
 
-  public function show($id)
+  /**
+   * Index function to show list of notes.
+   *
+   * @param int $id.
+   *   The note ID.
+   *
+   * @return array
+   *   JSON response of note item.
+   */
+  public function show(int $id)
   {
     $user = Auth::user();
     $note = $user->notes()->where('id', $id)->firstOrFail();
@@ -37,6 +50,13 @@ class NoteController extends Controller
     ];
   }
 
+  /**
+   * Stores new note.
+   *
+   * @param Request $request
+   *
+   * @return Note
+   */
   public function create(Request $request)
   {
     $user = Auth::user();
@@ -53,6 +73,14 @@ class NoteController extends Controller
     return $note;
   }
 
+  /**
+   * Updates existing note.
+   *
+   * @param int $id
+   * @param Request $request
+   *
+   * @return mixed
+   */
   public function update(int $id, Request $request)
   {
     $user = Auth::user();
@@ -66,12 +94,17 @@ class NoteController extends Controller
     $note->title = $request->get('title');
     $note->note = $request->get('note');
     $note->save();
-    return [
-      'Note saved'
-    ];
+    return $note;
   }
 
-  public function delete($id)
+  /**
+   * Deletes existing note.
+   *
+   * @param int $id
+   *
+   * @return int
+   */
+  public function delete(int $id)
   {
     $user = Auth::user();
     $user->notes()->where('id', $id)->firstOrFail();
