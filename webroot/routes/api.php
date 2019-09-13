@@ -25,6 +25,6 @@ Route::middleware('auth.basic.once')->group(function() {
   // I removed this because nginx did not like put/patch requests. Otherwise, I would be using put/patch.
   // Route::patch('notes/{id}', 'NoteController@update');
   // I added this because nginx did not like put/patch requests. Otherwise, I would be using put/patch.
-  Route::post('notes/{id}/update', 'NoteController@update');
+  Route::post('notes/{id}', 'NoteController@update');
   Route::delete('notes/{id}', 'NoteController@delete');
 });
