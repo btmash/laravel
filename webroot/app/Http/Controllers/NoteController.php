@@ -25,6 +25,18 @@ class NoteController extends Controller
     return $notes;
   }
 
+  public function show($id)
+  {
+    $user = Auth::user();
+    $note = $user->notes()->where('id', $id)->firstOrFail();
+    return [
+      'id' => $note->id,
+      'title' => $note->title,
+      'created' => $note->created_at,
+      'updated' => $note->updated_at,
+    ];
+  }
+
   public function create(Request $request)
   {
     $user = Auth::user();
@@ -41,14 +53,25 @@ class NoteController extends Controller
     return $note;
   }
 
-  public function delete($id) {
+  public function update(int $id, Request $request)
+  {
     $user = Auth::user();
-    $note = $this->findNote($id, $user);
-    return Note::destroy($id);
+    $note = $user->notes()->where('id', $id)->firstOrFail();
 
+    $request->validate([
+      'title' => ['required', 'string', 'max:255'],
+      'note' => ['required', 'string', 'max:1000'],
+    ]);
+
+    $note->title = $request->get('title');
+    $note->note = $request->get('note');
+    return $note->save();
   }
 
-  private function findNote($id, $user) {
-    return Note::where('id', $id)->where('user_id', $user->id);
+  public function delete($id)
+  {
+    $user = Auth::user();
+    $user->notes()->where('id', $id)->firstOrFail();
+    return Note::destroy($id);
   }
 }
