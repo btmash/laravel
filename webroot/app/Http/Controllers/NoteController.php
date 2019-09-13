@@ -65,7 +65,10 @@ class NoteController extends Controller
 
     $note->title = $request->get('title');
     $note->note = $request->get('note');
-    return $note->save();
+    $note->save();
+    return [
+      'Note saved'
+    ];
   }
 
   public function delete($id)
